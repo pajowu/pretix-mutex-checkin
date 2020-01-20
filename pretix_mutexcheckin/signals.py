@@ -1,9 +1,10 @@
 from django.dispatch import receiver
 from django.urls import resolve, reverse
 from django.utils.translation import ugettext_lazy as _
-from pretix.presale.signals import sass_postamble
+from pretix.base.signals import checkin_created
 from pretix.control.signals import nav_event_settings
-
+import json
+from pretix.base.models.checkin import Checkin
 
 @receiver(nav_event_settings, dispatch_uid="mutex_checkin_settings")
 def mutexcheckin_settings(sender, request, **kwargs):
@@ -24,10 +25,17 @@ def mutexcheckin_settings(sender, request, **kwargs):
     ]
 
 
-# @receiver(sass_postamble, dispatch_uid="custom_css_sass_postamble")
-# def custom_css_sass_postamble(sender, filename=None, **kwargs):
-#     if sender.settings.custom_css_code:
-#         return sender.settings.custom_css_code
-#     else:
-#         return ""
-# TODO: checkin signal
+@receiver(checkin_created, dispatch_uid="mutex_checkin_checkin_created")
+def mutex_checkin_checkin_created(sender, checkin, **kwargs):
+    mutex_checkins = json.loads(sender.settings.get("mutex_checkin_lists", "[]"))
+    if checkin.list.pk in mutex_checkins:
+        checkins_to_delete = Checkin.objects.filter(list__in=mutex_checkins).filter(position=checkin.position).exclude(list=checkin.list)
+        for chk in checkins_to_delete:
+            chk.delete()
+            chk.position.order.log_action('pretix.event.checkin.reverted', data={
+                'position': chk.position.id,
+                'positionid': chk.position.positionid,
+                'list': chk.list.pk,
+                'web': False
+            })
+            chk.position.order.touch()
