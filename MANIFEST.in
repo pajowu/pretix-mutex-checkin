@@ -1,0 +1,3 @@
+recursive-include pretix_mutexcheckin/static *
+recursive-include pretix_mutexcheckin/templates *
+recursive-include pretix_mutexcheckin/locale *
