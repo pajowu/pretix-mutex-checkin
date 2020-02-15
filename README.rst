@@ -1,7 +1,7 @@
 Pretix Mutex Checkin
 ==========================
 
-This is a plugin for `pretix`_. 
+This is a plugin for `pretix`_ which provides the options to configure a list of mutually exclusive checkin lists. Whenever an order is checked into one of these, it will be removed from the other lists. One use case would be if you need to track where your participants currently are by having a checkin list for every possible location which are combined into one mutex checkin.
 
 Development setup
 -----------------

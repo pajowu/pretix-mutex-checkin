@@ -15,7 +15,7 @@ class PluginApp(PluginConfig):
         description = ugettext_lazy('Select checkin-lists where a checkin to one of them will check customers out of the other ones.')
         visible = True
         version = '1.0.0'
-        compatibility = "pretix>=2.7.0"
+        compatibility = "pretix>=3.6.0"
 
     def ready(self):
         from . import signals  # NOQA
