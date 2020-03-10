@@ -25,7 +25,7 @@ cmdclass = {
 
 setup(
     name='pretix-mutex-checkin',
-    version='1.0.0',
+    version='1.0.1',
     description='Select checkin-lists where a checkin to one of them will check customers out of the other ones.',
     long_description=long_description,
     url='https://github.com/pajowu/pretix-mutex-checkin',

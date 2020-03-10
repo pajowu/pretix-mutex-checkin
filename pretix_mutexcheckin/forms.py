@@ -20,7 +20,7 @@ class MutexCheckinSettingsForm(SettingsForm):
         super().__init__(*args, **kwargs)
         self.fields["mutex_checkin_lists"].queryset = event.checkin_lists.all()
         self.fields["mutex_checkin_lists"].initial = json.loads(
-            self.initial.pop("mutex_checkin_lists", [])
+            self.initial.pop("mutex_checkin_lists", "[]")
         )
 
     def clean_mutex_checkin_lists(self, *args, **kwargs):
