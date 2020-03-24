@@ -5,6 +5,7 @@ from pretix.base.signals import checkin_created
 from pretix.control.signals import nav_event_settings
 import json
 from pretix.base.models.checkin import Checkin
+from pretix.base.signals import event_copy_data
 
 @receiver(nav_event_settings, dispatch_uid="mutex_checkin_settings")
 def mutexcheckin_settings(sender, request, **kwargs):
@@ -39,3 +40,11 @@ def mutex_checkin_checkin_created(sender, checkin, **kwargs):
                 'web': False
             })
             chk.position.order.touch()
+
+@receiver(signal=event_copy_data, dispatch_uid="pages_copy_data")
+def event_copy_data_receiver(sender, other, checkin_list_map=None, **kwargs):
+    if checkin_list_map:
+        mutex_checkins_old = json.loads(other.settings.get("mutex_checkin_lists", "[]"))
+        mutex_checkins_new = list(filter(None, (checkin_list_map.get(x) for x in mutex_checkins_old)))
+        mutex_checkins_new_pk = [x.pk for x in mutex_checkins_new]
+        sender.settings.set("mutex_checkin_lists", json.dumps(mutex_checkins_new_pk))
