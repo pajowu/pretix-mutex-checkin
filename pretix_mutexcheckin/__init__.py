@@ -14,7 +14,7 @@ class PluginApp(PluginConfig):
         author = 'Karl Engelhardt'
         description = ugettext_lazy('Select checkin-lists where a checkin to one of them will check customers out of the other ones.')
         visible = True
-        version = '1.0.2'
+        version = '1.1.0'
         compatibility = "pretix>=3.6.0"
 
     def ready(self):
